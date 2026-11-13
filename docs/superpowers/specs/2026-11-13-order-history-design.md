@@ -1,0 +1,11 @@
+# Order history and reorder
+
+The user requests local order history/reorder and explicitly requests no demo wording or indicators. Use neutral customer-facing Order history, Place order, and order-recorded wording throughout the connected checkout flow, including footer. Do not claim shipping, payment processing, accounts, or server fulfillment. Keep technical limitations in developer documentation; explain browser-only persistence and storage errors where useful.
+
+Save a snapshot only after confirmed checkout: order number, timestamp, product IDs/names, quantities, original unit prices, and a computed historical total. Never save delivery name, address, phone, or extra input fields. Load only validated records; ignore malformed/duplicate records and escape all stored text. Store under sidequest-orders-v1. History survives refresh and synchronizes across tabs. Failed storage retains page-session records and shows an accurate explanation.
+
+Provide an Order history navigation link and #orders view. Newest orders appear first with date/number/total, expandable item details, Reorder, and Delete. Clear history requires confirmation. Empty state leads to the collection. Completion links directly to order history. Deletion affects order records only; preserve bag/favorites. Restore meaningful keyboard focus after rerender/deletion and keep the mobile header usable.
+
+Reorder opens a native review dialog before changing the bag. Show original and current prices, available/missing products, quantities, and the total being added. Missing products are explicitly omitted only after the user accepts Add available items. All unavailable or any 99-unit conflict disables confirmation; no partial addition for quantity conflicts. Recompute the plan at confirmation and after cross-tab cart updates. Add quantities to existing bag lines without replacing anything, persist once, and navigate to the bag. A storage failure must remain visible in feedback. Historical prices never change.
+
+Use existing branding, native dialog/focus patterns, and no dependencies/backend. An independent history view avoids nested dialogs. Recently viewed products remain pending; the user has explicitly selected order history next.

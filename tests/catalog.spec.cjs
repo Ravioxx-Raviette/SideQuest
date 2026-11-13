@@ -18,7 +18,7 @@ test('catalog sorts all five ways and restores curated order', async ({ page }) 
 
 test('filter chips remove one constraint at a time and recover from no results', async ({ page }, testInfo) => {
   await page.goto('/');
-  await page.getByRole('radio', { name: 'D20', exact: false }).check();
+  await page.locator('.filters').getByRole('radio', { name: 'D20', exact: false }).check();
   await page.getByLabel('Material', { exact: true }).selectOption('Metal');
   await page.getByLabel('Price range').selectOption('under250');
   await page.getByLabel('Search dice by name').fill('D20');

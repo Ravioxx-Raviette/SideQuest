@@ -121,7 +121,8 @@ const money = (value) =>
   new Intl.NumberFormat("en-PH", {
     style: "currency",
     currency: "PHP",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(value);
 const escapeHTML = (value) =>
   String(value).replace(
@@ -305,13 +306,13 @@ function showProduct(id) {
   const product = productById(id);
   detailProduct = product;
   $("#product-detail-content").innerHTML =
-    `<div class="product-details"><div class="detail-image" style="--card-bg:${product.bg}"><img src="${productImage(product)}" alt="${product.name} dice illustration" width="260" height="220"></div><div class="detail-copy"><p class="eyebrow">MEET YOUR NEXT LUCKY CHARM</p><h2 id="product-dialog-title">${product.name}</h2><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><dl class="detail-specs"><div><dt>Material</dt><dd>${product.material}</dd></div><div><dt>Size</dt><dd>${product.size}</dd></div><div><dt>Includes</dt><dd>${product.contents}</dd></div></dl><span class="detail-quantity-label">Quantity</span><div class="detail-add">${quantityControl(product, 1, "detail")}<button class="button primary" type="button" id="detail-add">Add to cart <span aria-hidden="true">+</span></button></div>${comparisonControl(product)}${wishlistControl(product)}${diceGuideHelp(product)}</div></div>`;
+    `<div class="product-details"><div class="detail-image" style="--card-bg:${product.bg}"><img src="${productImage(product)}" alt="${product.name} dice illustration" width="260" height="220"></div><div class="detail-copy"><p class="eyebrow">MEET YOUR NEXT LUCKY CHARM</p><h2 id="product-dialog-title">${product.name}</h2><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><dl class="detail-specs"><div><dt>Material</dt><dd>${product.material}</dd></div><div><dt>Size</dt><dd>${product.size}</dd></div><div><dt>Includes</dt><dd>${product.contents}</dd></div></dl><span class="detail-quantity-label">Quantity</span><div class="detail-add">${quantityControl(product, 1, "detail")}<button class="button primary" type="button" id="detail-add">Add to cart <span aria-hidden="true">+</span></button></div>${comparisonControl(product)}${wishlistControl(product)}${diceGuideHelp(product)}${productDiceRoller(product)}</div></div>`;
   $("#product-dialog").showModal();
 }
 
 function orderSummary(checkout = false) {
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  return `<aside class="order-summary" aria-label="Order summary"><h2>The good stuff.</h2><div class="summary-line"><span>Subtotal (${count} ${count === 1 ? "item" : "items"})</span><span>${money(cartTotal())}</span></div><div class="summary-line"><span>Delivery</span><span>Demo only</span></div><div class="summary-line summary-total"><span>Total</span><span>${money(cartTotal())}</span></div>${checkout ? "" : `<button class="button primary" type="button" id="checkout-button" ${cart.length ? "" : "disabled"}>Continue to checkout <span aria-hidden="true">→</span></button>`}<p class="summary-note">A class project, made for exploring. Orders are simulated; no payment or delivery takes place.</p></aside>`;
+  return `<aside class="order-summary" aria-label="Order summary"><h2>The good stuff.</h2><div class="summary-line"><span>Subtotal (${count} ${count === 1 ? "item" : "items"})</span><span>${money(cartTotal())}</span></div><div class="summary-line"><span>Delivery</span><span>Not charged</span></div><div class="summary-line summary-total"><span>Total</span><span>${money(cartTotal())}</span></div>${checkout ? "" : `<button class="button primary" type="button" id="checkout-button" ${cart.length ? "" : "disabled"}>Continue to checkout <span aria-hidden="true">→</span></button>`}<p class="summary-note">Review your items and quantities before placing your order.</p></aside>`;
 }
 
 function renderCart() {
@@ -382,17 +383,17 @@ function renderCheckout() {
   setProgress();
   if (checkoutStep === "complete" && lastOrder) {
     $("#checkout-content").innerHTML =
-      `<div class="success-panel"><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">HERE’S TO YOUR NEXT ADVENTURE</p><h2>You’re on a roll.</h2><p>Your simulated order is complete.<br>Thanks for taking Sidequest for a spin.</p><strong class="order-number">${lastOrder.number}</strong><p>${lastOrder.count} ${lastOrder.count === 1 ? "item" : "items"} · ${money(lastOrder.total)}<br>This is a demo. No payment was collected and nothing will be shipped.</p><a class="button primary" href="#shop">Continue shopping ↗</a></div>`;
+      `<div class="success-panel"><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">HERE’S TO YOUR NEXT ADVENTURE</p><h2>You’re on a roll.</h2><p>Your order has been recorded.<br>Thanks for choosing Sidequest.</p><strong class="order-number">${lastOrder.number}</strong><p>${lastOrder.count} ${lastOrder.count === 1 ? "item" : "items"} · ${money(lastOrder.total)}<br>Your order details are available in order history.</p><div class="order-success-actions"><a class="button primary" href="#orders">View order history</a><button type="button" class="button secondary" data-order-summary="${lastOrder.number}" aria-label="View order summary">Order summary</button><a class="button secondary" href="#shop">Continue shopping ↗</a></div>${ordersCanSave ? "" : '<p class="order-save-warning">Order history is available for this page only because browser storage couldn’t save it.</p>'}</div>`;
     return;
   }
   if (checkoutStep === "review") {
     $("#checkout-content").innerHTML =
-      `<div class="checkout-layout"><div class="checkout-panel"><h2>A quick look before you roll.</h2><p class="panel-intro">Check your details and the dice coming along for the adventure.</p><div class="review-block"><h3>Delivery details</h3><p class="delivery-details" id="review-delivery"></p><button class="text-button" id="edit-delivery" type="button">Edit delivery details</button></div><div class="review-block"><h3>In your bag</h3>${cart.map((item) => `<div class="review-item"><span>${productById(item.id).name} × ${item.quantity}</span><strong>${money(productById(item.id).price * item.quantity)}</strong></div>`).join("")}</div><div class="review-actions"><button class="button primary" id="place-order" type="button">Place demo order →</button><a class="button secondary" href="#cart">Edit bag</a></div></div>${orderSummary(true)}</div>`;
+      `<div class="checkout-layout"><div class="checkout-panel"><h2>A quick look before you roll.</h2><p class="panel-intro">Check your details and the dice coming along for the adventure.</p><div class="review-block"><h3>Delivery details</h3><p class="delivery-details" id="review-delivery"></p><button class="text-button" id="edit-delivery" type="button">Edit delivery details</button></div><div class="review-block"><h3>In your bag</h3>${cart.map((item) => `<div class="review-item"><span>${productById(item.id).name} × ${item.quantity}</span><strong>${money(productById(item.id).price * item.quantity)}</strong></div>`).join("")}</div><div class="review-actions"><button class="button primary" id="place-order" type="button">Place order <span aria-hidden="true">→</span></button><a class="button secondary" href="#cart">Edit bag</a></div></div>${orderSummary(true)}</div>`;
     $("#review-delivery").textContent =
       `${delivery.name}\n${delivery.address}\n${delivery.phone}`;
   } else {
     $("#checkout-content").innerHTML =
-      `<div class="checkout-layout"><div class="checkout-panel"><h2>Where’s the adventure?</h2><p class="panel-intro">Use sample details for this class demo. Your information stays on this page and is cleared after checkout.</p><form id="delivery-form" novalidate><div class="field"><label for="delivery-name">Full name</label><input id="delivery-name" name="name" autocomplete="name" maxlength="100" required aria-describedby="name-error" value="${escapeHTML(delivery.name)}"><p class="field-error" id="name-error" hidden></p></div><div class="field"><label for="delivery-address">Delivery address</label><textarea id="delivery-address" name="address" autocomplete="street-address" maxlength="400" required aria-describedby="address-error">${escapeHTML(delivery.address)}</textarea><p class="field-error" id="address-error" hidden></p></div><div class="field"><label for="delivery-phone">Contact number</label><input id="delivery-phone" name="phone" type="tel" autocomplete="tel" maxlength="25" required aria-describedby="phone-hint phone-error" value="${escapeHTML(delivery.phone)}"><p class="field-hint" id="phone-hint">Include 7–15 digits, for example 0917 123 4567.</p><p class="field-error" id="phone-error" hidden></p></div><button class="button primary" type="submit">Review your order →</button></form></div>${orderSummary(true)}</div>`;
+      `<div class="checkout-layout"><div class="checkout-panel"><h2>Where’s the adventure?</h2><p class="panel-intro">Enter your delivery details. They stay on this page and are cleared after checkout.</p><form id="delivery-form" novalidate><div class="field"><label for="delivery-name">Full name</label><input id="delivery-name" name="name" autocomplete="name" maxlength="100" required aria-describedby="name-error" value="${escapeHTML(delivery.name)}"><p class="field-error" id="name-error" hidden></p></div><div class="field"><label for="delivery-address">Delivery address</label><textarea id="delivery-address" name="address" autocomplete="street-address" maxlength="400" required aria-describedby="address-error">${escapeHTML(delivery.address)}</textarea><p class="field-error" id="address-error" hidden></p></div><div class="field"><label for="delivery-phone">Contact number</label><input id="delivery-phone" name="phone" type="tel" autocomplete="tel" maxlength="25" required aria-describedby="phone-hint phone-error" value="${escapeHTML(delivery.phone)}"><p class="field-hint" id="phone-hint">Include 7–15 digits, for example 0917 123 4567.</p><p class="field-error" id="phone-error" hidden></p></div><button class="button primary" type="submit">Review your order <span aria-hidden="true">→</span></button></form></div>${orderSummary(true)}</div>`;
   }
 }
 
@@ -451,20 +452,27 @@ function finishOrder() {
     total: cartTotal(),
     count: cart.reduce((sum, item) => sum + item.quantity, 0),
   };
+  const historySaved = recordCompletedOrder(lastOrder.number, cart);
   cart = [];
   persistCart();
   delivery = { name: "", address: "", phone: "" };
   checkoutStep = "complete";
   renderCheckout();
   $("#checkout-heading").focus();
-  notify("Demo order placed. Here’s to your next adventure!");
+  notify(`Order recorded. Here’s to your next adventure!${historySaved ? "" : " Order history is available for this page only; browser storage couldn’t save it."}${cartLastSaveSucceeded ? "" : " The saved bag couldn’t be cleared; review it after refreshing."}`, !historySaved || !cartLastSaveSucceeded);
 }
 
 function route(initial = false) {
   rememberDelivery();
   const hash = location.hash.slice(1);
+  const receiptNumber = hash.startsWith("receipt/") ? hash.slice(8) : null;
   let view =
-    hash === "cart" ? "cart" : hash === "checkout" ? "checkout" : hash === "wishlist" ? "wishlist" : "shop";
+    hash === "cart" ? "cart" : hash === "checkout" ? "checkout" : hash === "wishlist" ? "wishlist" : hash === "orders" ? "orders" : receiptNumber !== null ? "receipt" : "shop";
+  if (view === "receipt" && !renderOrderReceipt(receiptNumber)) {
+    history.replaceState(null, "", "#orders");
+    view = "orders";
+    notify("That order summary isn’t available in this browser.", true);
+  }
   if (
     view === "checkout" &&
     !cart.length &&
@@ -477,14 +485,15 @@ function route(initial = false) {
     checkoutStep = "delivery";
     lastOrder = null;
   }
-  ["shop", "cart", "checkout", "wishlist"].forEach((name) => {
+  ["shop", "cart", "checkout", "wishlist", "orders", "receipt"].forEach((name) => {
     $(`#${name}-view`).hidden = name !== view;
   });
   if (view === "cart") renderCart();
   if (view === "checkout") { clearCartUndo(); renderCheckout(); }
   if (view === "wishlist") renderWishlist();
-  document.title = `${view === "cart" ? "Your bag" : view === "checkout" ? "Checkout" : view === "wishlist" ? "Your wishlist" : "Dice for your next adventure"} — Sidequest`;
-  const section = ["collection", "dice-finder", "dice-guide"].includes(hash)
+  if (view === "orders") renderOrders();
+  document.title = `${view === "cart" ? "Your bag" : view === "checkout" ? "Checkout" : view === "wishlist" ? "Your wishlist" : view === "orders" ? "Order history" : view === "receipt" ? `Order ${receiptNumber} summary` : "Dice for your next adventure"} — Sidequest`;
+  const section = ["collection", "dice-finder", "dice-guide", "dice-roller"].includes(hash)
     ? document.getElementById(hash)
     : null;
   if (section) {
@@ -497,7 +506,7 @@ function route(initial = false) {
     }
   } else if (!initial) {
     window.scrollTo({ top: 0, behavior: "instant" });
-    $(view === "wishlist" ? "#wishlist-heading" : "#main").focus({ preventScroll: true });
+    $(view === "wishlist" ? "#wishlist-heading" : view === "orders" ? "#orders-heading" : view === "receipt" ? "#receipt-heading" : "#main").focus({ preventScroll: true });
   }
 }
 
@@ -553,8 +562,8 @@ document.addEventListener("click", (event) => {
   if (button.id === "place-order")
     askConfirmation(
       "Ready for your next quest?",
-      `Place this simulated order for ${money(cartTotal())}? No payment will be collected.`,
-      "Place demo order",
+      `Place this order for ${money(cartTotal())}?`,
+      "Place order",
       finishOrder,
       () => $("#checkout-heading").focus(),
     );
@@ -591,7 +600,15 @@ document.addEventListener("keydown", (event) => {
     ...dialog.querySelectorAll(
       'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], summary, [tabindex]:not([tabindex="-1"]):not(:disabled)',
     ),
-  ].filter((element) => element.getClientRects().length);
+  ].filter((element) => {
+    if (!element.getClientRects().length) return false;
+    // Closed native disclosures can retain layout boxes for their contents.
+    // Only their summary belongs in the keyboard cycle until opened.
+    for (let parent = element.parentElement; parent && parent !== dialog; parent = parent.parentElement) {
+      if (parent.matches("details:not([open])") && !parent.querySelector("summary")?.contains(element)) return false;
+    }
+    return true;
+  });
   const first = controls[0];
   const last = controls.at(-1);
   if (

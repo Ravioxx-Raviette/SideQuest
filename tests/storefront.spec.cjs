@@ -3,7 +3,7 @@ const { test, expect } = require("@playwright/test");
 test("combined filters and empty-state reset", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".product-card")).toHaveCount(8);
-  await page.getByRole("radio", { name: "D20", exact: false }).check();
+  await page.locator(".filters").getByRole("radio", { name: "D20", exact: false }).check();
   await page.getByLabel("Material", { exact: true }).selectOption("Metal");
   await page.getByLabel("Price range").selectOption("250to500");
   await expect(page.locator(".product-card")).toHaveCount(1);
@@ -119,7 +119,7 @@ test("checkout validates, preserves canceled orders, and completes once", async 
   await expect(page.getByLabel("Full name")).toHaveValue("Test Adventurer");
   await page.getByRole("button", { name: "Review your order" }).click();
   await page
-    .getByRole("button", { name: "Place demo order", exact: false })
+    .getByRole("button", { name: "Place order", exact: false })
     .click();
   await expect(
     page.getByRole("button", { name: "Cancel", exact: true }),
@@ -132,11 +132,11 @@ test("checkout validates, preserves canceled orders, and completes once", async 
     page.getByRole("link", { name: "Your bag, 2 items" }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Place demo order", exact: false })
+    .getByRole("button", { name: "Place order", exact: false })
     .click();
   await page
     .getByRole("dialog")
-    .getByRole("button", { name: "Place demo order", exact: true })
+    .getByRole("button", { name: "Place order", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "You’re on a roll." }),

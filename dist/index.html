@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#f5f3ed" />
     <meta
       name="description"
-      content="Find your next lucky roll. Shop colorful dice, metal D20s, and polyhedral sets at Sidequest, a simulated student storefront."
+      content="Find your next lucky roll. Shop colorful dice, metal D20s, and polyhedral sets at Sidequest."
     />
     <title>Sidequest — A little luck goes a long way.</title>
     <link
@@ -19,6 +19,9 @@
     <script src="wishlist.js" defer></script>
     <script src="catalog.js" defer></script>
     <script src="cart-undo.js" defer></script>
+    <script src="orders.js" defer></script>
+    <script src="receipt.js" defer></script>
+    <script src="roller.js" defer></script>
     <script src="app.js" defer></script>
     <script src="finder.js" defer></script>
   </head>
@@ -37,7 +40,7 @@
       >
       <nav aria-label="Main navigation">
         <a href="#shop" id="shop-link">The collection</a
-        ><a class="wishlist-link" id="wishlist-link" href="#wishlist" aria-label="Wishlist, 0 saved items"><span class="wishlist-nav-heart" aria-hidden="true">♡</span><span class="wishlist-link-text">Wishlist</span><span id="wishlist-count" class="wishlist-count">0</span></a><a class="cart-link" href="#cart"
+        ><a class="orders-link" href="#orders" aria-label="Order history"><span aria-hidden="true">↺</span> Orders</a><a class="wishlist-link" id="wishlist-link" href="#wishlist" aria-label="Wishlist, 0 saved items"><span class="wishlist-nav-heart" aria-hidden="true">♡</span><span class="wishlist-link-text">Wishlist</span><span id="wishlist-count" class="wishlist-count">0</span></a><a class="cart-link" href="#cart"
           ><svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 8h12l1 12H5L6 8Zm3 0V6a3 3 0 0 1 6 0v2" />
           </svg>
@@ -63,6 +66,7 @@
             <a class="button primary" href="#collection"
               >Find your dice <span aria-hidden="true">↗</span></a
             >
+            <a class="hero-roller-link text-button" href="#dice-roller">Test your luck <span aria-hidden="true">↗</span></a>
             <div class="hero-note">
               <span aria-hidden="true">✦</span> Good company. Great rolls.
             </div>
@@ -128,7 +132,7 @@
                   <div class="guide-browse-actions"><button type="button" class="button primary" data-guide-type="Set">Browse seven-piece sets <span aria-hidden="true">↗</span></button><button type="button" class="button secondary" data-guide-type="D20">Browse D20 dice</button><button type="button" class="button secondary" data-guide-type="D6">Browse D6 dice</button></div>
                 </section>
                 <section class="guide-material-section" aria-labelledby="guide-material-heading">
-                  <p class="eyebrow">03 / PICK YOUR FEEL</p><h3 id="guide-material-heading">Same adventure. A different material.</h3><p>Here’s how the materials appear in our sample collection. Check each product’s size, price, and included dice before choosing.</p>
+                  <p class="eyebrow">03 / PICK YOUR FEEL</p><h3 id="guide-material-heading">Same adventure. A different material.</h3><p>Here’s how the materials appear in our collection. Check each product’s size, price, and included dice before choosing.</p>
                   <div class="guide-materials">
                     <article><span class="guide-material-number" aria-hidden="true">01</span><h4>Resin</h4><p>Colorful singles and seven-piece sets, from terracotta Ember to dusky-blue Starlight.</p><button type="button" class="button secondary" data-guide-material="Resin">Browse resin dice</button></article>
                     <article><span class="guide-material-number" aria-hidden="true">02</span><h4>Acrylic</h4><p>Our Ivory D6 and Tide D20: two individual dice with classic ivory and ocean-teal colors.</p><button type="button" class="button secondary" data-guide-material="Acrylic">Browse acrylic dice</button></article>
@@ -238,6 +242,9 @@
             </div>
           </div>
         </section>
+        <section id="dice-roller" class="roller-section wrap" aria-labelledby="roller-heading">
+          <div class="roller-shell"><div class="roller-section-heading"><div><p class="eyebrow">A LITTLE LUCK, IN ACTION</p><h2 id="roller-heading" tabindex="-1">Test your luck<span>.</span></h2></div><p>Six sides or twenty. A new possibility with every roll.</p></div><div id="roller-main"></div></div>
+        </section>
         <aside id="comparison-tray" class="comparison-tray" aria-label="Comparison selection" hidden>
           <div id="comparison-selection"></div>
         </aside>
@@ -250,6 +257,17 @@
           </div>
           <span class="closing-die" aria-hidden="true">20</span>
         </section>
+      </section>
+      <section id="receipt-view" class="wrap inner-page receipt-view" hidden aria-labelledby="receipt-heading">
+        <div class="receipt-actions"><a class="back-link" href="#orders">← Back to order history</a><button class="button primary" type="button" id="print-order-summary">Print summary <span aria-hidden="true">↗</span></button></div>
+        <p class="receipt-print-hint">Use your browser’s print options to print or save as PDF.</p><div id="receipt-content"></div>
+      </section>
+      <section id="orders-view" class="wrap inner-page" hidden aria-labelledby="orders-heading">
+        <a class="back-link" href="#collection">← Back to the collection</a><p class="eyebrow">FAVORITE ADVENTURES, WORTH REPEATING</p>
+        <h1 id="orders-heading" tabindex="-1">Your orders<span>.</span></h1>
+        <p class="orders-intro">Past picks, ready for another round. Saved on this browser; delivery details aren’t included.</p>
+        <p id="orders-storage-note" class="wishlist-storage-note" hidden>Browser storage isn’t available. Order history changes last for this page only and may disappear after a refresh.</p>
+        <p id="orders-status" class="wishlist-status" role="status" aria-live="polite" aria-atomic="true"></p><div id="orders-content"></div>
       </section>
       <section id="wishlist-view" class="wrap inner-page" hidden aria-labelledby="wishlist-heading">
         <a class="back-link" href="#collection">← Back to the collection</a>
@@ -295,9 +313,14 @@
           >SIDEQUEST<span class="brand-dot">®</span></a
         >
         <p>A little luck. A lot of adventure.</p>
-        <small>Student storefront · Simulated orders only</small>
+        <small>Good company. Great rolls.</small>
       </div>
     </footer>
+    <dialog id="reorder-dialog" class="reorder-dialog" aria-labelledby="reorder-title" aria-describedby="reorder-intro">
+      <button class="icon-button dialog-close" type="button" aria-label="Close reorder review" data-close-dialog="reorder-dialog">×</button>
+      <p class="eyebrow">ANOTHER CHAPTER. THE SAME GOOD COMPANY.</p><h2 id="reorder-title" tabindex="-1">Another round of favorites.</h2>
+      <p id="reorder-intro">Check current prices and availability before adding these items to your bag.</p><div id="reorder-content"></div><p id="reorder-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+    </dialog>
     <dialog id="comparison-dialog" class="comparison-dialog" aria-labelledby="comparison-title" aria-describedby="comparison-intro">
       <button class="icon-button dialog-close" type="button" aria-label="Close comparison" data-close-dialog="comparison-dialog">×</button>
       <p class="eyebrow">LESS GUESSWORK. MORE GOOD ROLLS.</p>
