@@ -1,0 +1,9 @@
+# Printable order summary
+
+Add the requested order-summary feature using neutral customer-facing wording, carrying forward the explicit no-demo-label preference. Provide Order summary actions in saved order cards and checkout completion. Open a dedicated #receipt/SQ-XXXXXXXX preview, with Back to order history and Print summary. The browser handles native printing and Save as PDF; avoid popup windows or external services.
+
+Use an immutable copy of the validated saved order: number, original timestamp, item names, quantities, original unit prices, line totals, and total. Show PHP currency consistently to two decimal places in the summary. Never use current catalog prices, shipping/payment status claims, tax-invoice labels, or delivery/contact information. Unknown/retired products still print from their historical snapshot. A deleted/unknown summary URL safely returns to order history with feedback. Unsaved page-session orders can be printed before refresh.
+
+The screen preview matches existing branding. Print only the selected summary on clean white paper, excluding site navigation/footer, buttons, dialogs, notifications, and other order records. Fit A4 and Letter paper, repeat table headings across pages, wrap long names, and avoid splitting rows or the totals block when possible. Support native print and Ctrl+P from the preview. Canceling print leaves the preview intact. Keep the browser's own header/footer options under the user's control.
+
+Use a dedicated view rather than a modal: it supports direct links/refresh, browser printing, and avoids top-layer dialog printing issues. Preserve previous feature state and restore focus to the summary heading after navigation. No new runtime dependencies. Actual PDF layout will be exported and visually checked during verification.

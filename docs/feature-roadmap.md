@@ -9,9 +9,9 @@ Requested scope: add all previously suggested improvements, starting with priori
 5. Active filter chips and product sorting — implemented and verified. Removable search/type/material/price chips, clear-all, five sort orders, preserved saved shopping choices, and accessible/mobile controls. Current full suite: 5 matching tests and 62 desktop/mobile browser checks pass.
 6. Undo bag-item removal — implemented and verified. Persistent inline recovery, multiple removals, exact quantities/order, safe merging, focus handling, checkout/cross-tab invalidation, and storage feedback. Current full suite: 5 matching tests and 72 desktop/mobile browser checks pass.
 7. Recently viewed products.
-8. Browser-local demo order history and reorder.
-9. Printable demo order summary.
-10. Optional D6/D20 virtual dice roller.
+8. Browser-local order history and reorder — implemented and verified. Product-only snapshots, original prices, current-price reorder review, additive bag updates, unavailable/conflict handling, deletion, and cross-tab/storage recovery. Neutral customer-facing wording per user request. Current full suite: 5 matching tests and 88 desktop/mobile browser checks pass.
+9. Printable order summary — implemented and verified. Historical summary preview from completion/history, native print/Save as PDF, original PHP prices, private item-only content, clean multipage paper layout, and deleted-record recovery. Current full suite: 5 matching tests and 100 desktop/mobile browser checks pass.
+10. D6/D20 virtual dice roller — implemented and verified. Folded into the closing-note die (D6/D20 switch, five saved recent rolls) plus the contextual product roller, eight-result history, clear history, guarded animation, independent results, keyboard support, and reduced-motion handling. Current full suite: 9 unit tests and 112 desktop/mobile browser checks pass.
 11. Saved larger-text and high-contrast display preferences.
 
-Keep simulated transactions clearly identified. Never save delivery information as part of local order history. Verify each phase against the existing shopping journey and include an updated presentation walkthrough when the features are ready.
+Use neutral customer-facing order wording as explicitly requested. Never save delivery information as part of local order history. The architecture remains browser-only without payment/shipping integrations. Verify each phase against the existing shopping journey and include an updated presentation walkthrough when the features are ready.

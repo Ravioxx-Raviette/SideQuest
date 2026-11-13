@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#3b2516" />
     <meta
       name="description"
-      content="Find your next lucky roll. Shop colorful dice, metal D20s, and polyhedral sets at Sidequest, a simulated student storefront."
+      content="Find your next lucky roll. Shop colorful dice, metal D20s, and polyhedral sets at Sidequest."
     />
     <title>Sidequest — A little luck goes a long way.</title>
     <link
@@ -35,6 +35,9 @@
     <script src="wishlist.js" defer></script>
     <script src="catalog.js" defer></script>
     <script src="cart-undo.js" defer></script>
+    <script src="orders.js" defer></script>
+    <script src="receipt.js" defer></script>
+    <script src="roller.js" defer></script>
     <script src="app.js" defer></script>
     <script src="finder.js" defer></script>
     <script src="theme.js" defer></script>
@@ -58,7 +61,7 @@
       >
       <nav aria-label="Main navigation">
         <a href="#shop" id="shop-link">The collection</a
-        ><a class="wishlist-link" id="wishlist-link" href="#wishlist" aria-label="Wishlist, 0 saved items"><span class="wishlist-nav-heart" aria-hidden="true"><svg class="heart-icon" viewBox="0 0 24 24" focusable="false"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.4 0 5.5 3.4 4.3 6.6-1.8 4.8-9.3 9.4-9.3 9.4Z" /></svg></span><span class="wishlist-link-text">Wishlist</span><span id="wishlist-count" class="wishlist-count">0</span></a><a class="cart-link" href="#cart"
+        ><a class="orders-link" href="#orders" aria-label="Order history"><span aria-hidden="true">↺</span> Orders</a><a class="wishlist-link" id="wishlist-link" href="#wishlist" aria-label="Wishlist, 0 saved items"><span class="wishlist-nav-heart" aria-hidden="true"><svg class="heart-icon" viewBox="0 0 24 24" focusable="false"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.4 0 5.5 3.4 4.3 6.6-1.8 4.8-9.3 9.4-9.3 9.4Z" /></svg></span><span class="wishlist-link-text">Wishlist</span><span id="wishlist-count" class="wishlist-count">0</span></a><a class="cart-link" href="#cart"
           ><svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 8h12l1 12H5L6 8Zm3 0V6a3 3 0 0 1 6 0v2" />
           </svg>
@@ -87,6 +90,7 @@
             <a class="button primary" href="#collection"
               >Find your dice <span aria-hidden="true">↗</span></a
             >
+            <a class="hero-roller-link text-button" href="#dice-roller">Test your luck <span aria-hidden="true">↗</span></a>
             <div class="hero-note">
               <span aria-hidden="true">✦</span> Good company. Great rolls.
             </div>
@@ -169,7 +173,7 @@
                   <div class="guide-browse-actions"><button type="button" class="button primary" data-guide-type="Set">Browse seven-piece sets <span aria-hidden="true">↗</span></button><button type="button" class="button secondary" data-guide-type="D20">Browse D20 dice</button><button type="button" class="button secondary" data-guide-type="D6">Browse D6 dice</button></div>
                 </section>
                 <section class="guide-material-section" aria-labelledby="guide-material-heading">
-                  <p class="eyebrow">03 / PICK YOUR FEEL</p><h3 id="guide-material-heading">Same adventure. A different material.</h3><p>Here’s how the materials appear in our sample collection. Check each product’s size, price, and included dice before choosing.</p>
+                  <p class="eyebrow">03 / PICK YOUR FEEL</p><h3 id="guide-material-heading">Same adventure. A different material.</h3><p>Here’s how the materials appear in our collection. Check each product’s size, price, and included dice before choosing.</p>
                   <div class="guide-materials">
                     <article><span class="guide-material-number" aria-hidden="true">01</span><h4>Resin</h4><p>Colorful singles and seven-piece sets, from terracotta Ember to dusky-blue Starlight.</p><button type="button" class="button secondary" data-guide-material="Resin">Browse resin dice</button></article>
                     <article><span class="guide-material-number" aria-hidden="true">02</span><h4>Acrylic</h4><p>Our Ivory D6 and Tide D20: two individual dice with classic ivory and ocean-teal colors.</p><button type="button" class="button secondary" data-guide-material="Acrylic">Browse acrylic dice</button></article>
@@ -282,15 +286,28 @@
         <aside id="comparison-tray" class="comparison-tray" aria-label="Comparison selection" hidden>
           <div id="comparison-selection"></div>
         </aside>
-        <section class="closing-note wrap">
+        <section id="dice-roller" class="closing-note wrap" aria-labelledby="closing-heading">
           <span aria-hidden="true">✳</span>
           <div>
             <p class="eyebrow">MORE THAN NUMBERS ON A TABLE</p>
-            <h2>A good roll is just the beginning.</h2>
+            <h2 id="closing-heading">A good roll is just the beginning.</h2>
             <p>Gather your party. Make some memories.</p>
           </div>
           <div class="closing-roll">
-            <button class="closing-die" id="closing-die" type="button" aria-label="Roll the D20" aria-describedby="die-result">
+            <fieldset class="die-switch">
+              <legend class="sr-only">Choose a die</legend>
+              <label><input type="radio" name="closing-die-type" value="6" /><span>D6</span></label>
+              <label><input type="radio" name="closing-die-type" value="20" checked /><span>D20</span></label>
+            </fieldset>
+            <div class="die-stage">
+            <button class="closing-die" id="closing-die" type="button" data-sides="20" aria-label="Roll the D20" aria-describedby="die-result">
+              <svg class="d6-art" viewBox="0 0 100 104" aria-hidden="true" focusable="false">
+                <path class="d6-top" d="M14 34 34 16 92 16 72 34Z" />
+                <path class="d6-side" d="M72 34 92 16 92 76 72 96Z" />
+                <rect class="d6-front" x="14" y="34" width="58" height="62" rx="7" />
+                <path class="d6-edges" d="M14 34 34 16 92 16 72 34 M72 34 92 16 92 76 72 96" />
+                <g class="d6-pips"></g>
+              </svg>
               <svg class="d20-art" viewBox="0 0 100 104" aria-hidden="true" focusable="false">
                 <polygon class="d20-base" points="50,2 93,27 93,77 50,102 7,77 7,27" />
                 <polygon fill="#fff" opacity=".2" points="50,26 78,74 22,74" />
@@ -312,9 +329,26 @@
                 <text class="closing-die-face" x="50" y="65">20</text>
               </svg>
             </button>
+            </div>
             <p class="die-result" id="die-result" role="status" aria-live="polite">Tap to roll</p>
+            <div class="die-history" id="die-history" hidden>
+              <span class="die-history-label" id="die-history-label">Recent</span>
+              <ol aria-labelledby="die-history-label"></ol>
+              <button class="text-button die-history-clear" type="button" aria-label="Clear recent rolls">Clear</button>
+            </div>
           </div>
         </section>
+      </section>
+      <section id="receipt-view" class="wrap inner-page receipt-view" hidden aria-labelledby="receipt-heading">
+        <div class="receipt-actions"><a class="back-link" href="#orders">← Back to order history</a><button class="button primary" type="button" id="print-order-summary">Print summary <span aria-hidden="true">↗</span></button></div>
+        <p class="receipt-print-hint">Use your browser’s print options to print or save as PDF.</p><div id="receipt-content"></div>
+      </section>
+      <section id="orders-view" class="wrap inner-page" hidden aria-labelledby="orders-heading">
+        <a class="back-link" href="#collection">← Back to the collection</a><p class="eyebrow">FAVORITE ADVENTURES, WORTH REPEATING</p>
+        <h1 id="orders-heading" tabindex="-1">Your orders<span>.</span></h1>
+        <p class="orders-intro">Past picks, ready for another round. Saved on this browser; delivery details aren’t included.</p>
+        <p id="orders-storage-note" class="wishlist-storage-note" hidden>Browser storage isn’t available. Order history changes last for this page only and may disappear after a refresh.</p>
+        <p id="orders-status" class="wishlist-status" role="status" aria-live="polite" aria-atomic="true"></p><div id="orders-content"></div>
       </section>
       <section id="wishlist-view" class="wrap inner-page" hidden aria-labelledby="wishlist-heading">
         <a class="back-link" href="#collection">← Back to the collection</a>
@@ -360,10 +394,15 @@
           >SIDEQUEST<span class="brand-dot">®</span></a
         >
         <p>A little luck. A lot of adventure.</p>
-        <small>Student storefront · Simulated orders only</small>
+        <small>Good company. Great rolls.</small>
       </div>
     </footer>
     </div>
+    <dialog id="reorder-dialog" class="reorder-dialog" aria-labelledby="reorder-title" aria-describedby="reorder-intro">
+      <button class="icon-button dialog-close" type="button" aria-label="Close reorder review" data-close-dialog="reorder-dialog">×</button>
+      <p class="eyebrow">ANOTHER CHAPTER. THE SAME GOOD COMPANY.</p><h2 id="reorder-title" tabindex="-1">Another round of favorites.</h2>
+      <p id="reorder-intro">Check current prices and availability before adding these items to your bag.</p><div id="reorder-content"></div><p id="reorder-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+    </dialog>
     <dialog id="comparison-dialog" class="comparison-dialog" aria-labelledby="comparison-title" aria-describedby="comparison-intro">
       <button class="icon-button dialog-close" type="button" aria-label="Close comparison" data-close-dialog="comparison-dialog">×</button>
       <p class="eyebrow">LESS GUESSWORK. MORE GOOD ROLLS.</p>

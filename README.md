@@ -25,9 +25,12 @@ Then visit http://127.0.0.1:4173. Installing dependencies is not required to run
 - `dist/cart-undo.js`: persistent-in-page recovery of confirmed bag removals.
 - `dist/ambience.js`: decorative ambience: fireflies and a candlelight cursor in dark mode, butterflies and a sparkle trail in light mode (non-interactive canvases; off for reduced motion).
 - `dist/theme.js`: light / dark mode toggle (remembers the choice; defaults to the system setting).
-- `dist/dice-roll.js`: the rollable D20 in the closing note (fair random roll, announced to screen readers).
+- `dist/dice-roll.js`: the rollable die in the closing note: D6/D20 switch, fair random roll announced to screen readers, and the saved recent-rolls list.
 - `dist/scroll-lock.js`: locks the page behind open pop-ups, swapping the scrollbar for an unclickable look-alike so nothing shifts or scrolls.
 - `dist/assets/`: local SVG textures for the wooden background and climbing vines.
+- `dist/orders.js`: private order snapshots, order history, deletion, and current-price reorder review.
+- `dist/receipt.js`: historical order-summary preview and native browser printing.
+- `dist/roller.js`: the compact D6/D20 roller in product details, plus the shared rejection-sampled `rollDiceValue` used by both dice.
 
 Edit the `PRODUCTS` array in `dist/app.js` to change product names, prices, specifications, and colors. Prices are in Philippine pesos.
 
@@ -85,6 +88,38 @@ Removal history lives only in page memory. It clears when checkout begins, an or
 
 Presentation scenario: increase a product to three, remove it, point out the updated total and Undo action, then restore it with the keyboard. Remove every item to show that an empty bag can still be recovered. Remove two products and undo twice to demonstrate recovery order.
 
+### Order history and reorder
+
+After confirmed checkout, a product-only snapshot is saved under `sidequest-orders-v1`: order number, timestamp, product IDs/names, quantities, unit prices, and original total. Delivery names, addresses, and phone numbers are excluded. Open **Orders** in the header or **View order history** after checkout. Records survive refresh on the same browser/origin and synchronize across tabs.
+
+Expand a record to inspect its original items and prices. **Reorder** opens a review at current catalog prices, explicitly identifies unavailable products, and checks the combined bag quantity before adding anything. Existing bag items are preserved. Unavailable products require accepting **Add available items**; quantity conflicts prevent all additions until corrected. The review updates when another tab changes the bag/history. Historical prices remain unchanged.
+
+Delete a record or clear history through a confirmation. If saving fails, changes remain available for the current page and are reconciled with cross-tab updates instead of silently disappearing. No delivery details are stored or reused. Customer-facing checkout/history/footer copy uses neutral Order/Place order wording as requested; the underlying browser-only architecture has no payment or shipping integration.
+
+Presentation scenario: complete checkout, open Orders, refresh to demonstrate persistence, expand the saved record, and press Reorder. Show the review, then add its quantities to a bag that already contains products. Explain original versus current prices, deletion confirmation, and the unavailable/quantity-conflict recovery states.
+
+### Printable order summary
+
+Choose **Order summary** on a saved order or checkout completion to open its preview. **Print summary** opens the browser’s print options, where you can print or choose Save as PDF. Ctrl+P also works from the preview. The native print window controls printer, paper size, headers/footers, and destination.
+
+The summary uses the original order number/date, item names, quantities, unit prices, line totals, and total in PHP with two decimal places. It includes retired products from the saved snapshot, never current catalog prices or delivery/contact fields. It uses neutral Order summary wording without payment/shipping status claims.
+
+Only the selected document prints: site navigation, buttons, notifications, other orders, and the shop are excluded. Print styling uses a white page, automatic paper size, 14 mm margins, repeated table headings, and rows/totals that stay together where possible. Long product names wrap. Canceling print leaves the preview available.
+
+Direct `#receipt/SQ-XXXXXXXX` links reopen records saved in the same browser. Unknown/deleted records return to order history. An order deleted in another tab invalidates an open summary; page-session orders remain printable even if saving failed.
+
+Presentation scenario: complete an order, open Order summary, and show the clean document before opening Print summary. Choose Save as PDF in the browser to share it. Repeat from an older order to show that historical prices remain unchanged.
+
+### Interactive D6/D20 roller
+
+The die in the bottom-right of the closing note is the shop’s roller. Choose **Test your luck** in the hero to jump to it. Use the **D6 / D20** switch above it, then click the die (or press Enter/Space). A D6 shows pips on a sage cube; a D20 shows its number. The die hops while flicking through faces, then announces the result to assistive technology. A top roll turns it gold and a 1 darkens it. The animation is skipped entirely when reduced motion is enabled, and rapid repeated clicks during a roll produce only one result.
+
+The latest five rolls appear under **Recent**, labelled with their dice type, and are saved under `sidequest-closing-rolls-v1` so they survive a refresh. Malformed saved entries are ignored, and if storage is blocked the list still works for the current visit. **Clear** empties it. Rolls never change the bag, wishlist, or other shopping data.
+
+Product details include an expandable compact roller (`dist/roller.js`). D6 products start with D6; D20 products and sets start with D20. Both choices remain available. This roller has its own results/history, saves nothing, starts fresh when another product is opened, and cancels unfinished rolls when closed.
+
+Presentation scenario: choose Test your luck, roll the D20, switch to D6 and roll again, then refresh to show the saved recent rolls before clearing them. Open a D6 product’s details to demonstrate its matching default. Enable the device’s reduced-motion preference to demonstrate the immediate result without animation.
+
 ### Shopping and checkout
 
 1. Search for “D20” and combine dice-type, material, and price filters.
@@ -93,7 +128,7 @@ Presentation scenario: increase a product to three, remove it, point out the upd
 4. Remove an item, first canceling and then confirming the dialog.
 5. Continue to checkout. Submit an empty form to demonstrate validation feedback.
 6. Enter sample details, review the order, and observe the progress indicator.
-7. Place the demo order, cancel once, and then confirm. The completion step shows an order number and clears the saved bag.
+7. Choose Place order, cancel once, and then confirm. The completion step shows an order number, saves the product-only order history, and clears the saved bag.
 
 Only product IDs and quantities are saved under `sidequest-cart-v1` in localStorage. Delivery details stay in memory and are cleared after completing an order. If browser storage is blocked, the cart works for the current page session and a notification explains the limitation. Quantities are whole numbers from 1 to 99.
 
@@ -111,7 +146,7 @@ npm test
 
 The suite checks desktop and mobile filtering, dialogs, quantities, cart persistence, validation, checkout cancellation/completion, and keyboard interaction.
 
-It also checks finder recommendations, missing-answer feedback, back/edit/reset behavior, no-match recovery, keyboard operation, and viewport fit. Comparison checks cover selection limits, shared selection state, filtering, exact specifications, differences filtering, removal recovery, modal keyboard navigation, responsive layout, and visible notifications. `npm test` runs both the matching unit tests and browser tests; `npm run test:unit` runs just the matching tests. Browser checks use two workers to keep local runs reliable.
+It also checks finder recommendations, missing-answer feedback, back/edit/reset behavior, no-match recovery, keyboard operation, and viewport fit. Comparison checks cover selection limits, shared selection state, filtering, exact specifications, differences filtering, removal recovery, modal keyboard navigation, responsive layout, and visible notifications. `npm test` runs matching/RNG unit tests and browser tests; `npm run test:unit` runs the matching and dice-result unit tests. Browser checks use two workers to keep local runs reliable.
 
 The remaining presentation improvements are tracked in `docs/feature-roadmap.md`.
 
@@ -122,3 +157,9 @@ Wishlist checks cover save/refresh/removal, safe moves and quantity limits, malf
 Catalog checks verify all five sort orders, restoring Featured order, individual/combined filter removal, no-results recovery, preserved wishlist/comparison state, guide integration, keyboard focus, accessible chip values, and long escaped search terms on 320px screens.
 
 Undo checks cover quantity/position/total restoration and saved state, several removals, empty-bag recovery, re-added quantity limits, checkout and cross-tab invalidation, storage failure messages, dismissal, and accessible keyboard focus.
+
+Order checks cover confirmed/canceled checkout, snapshot privacy and refresh, historical/current pricing, additive reorder, missing products and quantity conflicts, deletion, malformed/blocked storage, pending local changes, cross-tab bag/history updates, modal focus, neutral UI copy, and 320px layouts.
+
+Summary checks cover historical prices and decimal totals, direct navigation/refresh, native print delegation, print-only visibility, white paper, escaped names, retired products, failed-storage checkout, multipage PDF output, and cross-tab deletion. Browser-generated PDF fixtures are development artifacts and are not included in source commits.
+
+Roller unit checks cover both dice boundaries, rejection of excess random words, and invalid inputs. Browser checks cover the hero link, the closing die’s D6/D20 switch and artwork, duplicate activation, the five-roll saved history (refresh, malformed entries, blocked storage), clearing, product defaults, closing/reopening, reduced motion, keyboard operation, 320px layout, and no storage/bag side effects from the product roller.
