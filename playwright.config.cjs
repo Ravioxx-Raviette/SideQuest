@@ -1,7 +1,9 @@
 const { defineConfig, devices } = require("@playwright/test");
 module.exports = defineConfig({
   testDir: "./tests",
+  testMatch: "**/*.spec.cjs",
   fullyParallel: true,
+  workers: 2,
   use: { baseURL: "http://127.0.0.1:4173", trace: "retain-on-failure" },
   webServer: {
     command: "node tools/serve.cjs",

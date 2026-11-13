@@ -14,7 +14,13 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23be5031'/%3E%3Cpath d='M20 6 34 15 30 31 10 31 6 15Z' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-size='17'%3E20%3C/text%3E%3C/svg%3E"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script src="compare.js" defer></script>
+    <script src="guide.js" defer></script>
+    <script src="wishlist.js" defer></script>
+    <script src="catalog.js" defer></script>
+    <script src="cart-undo.js" defer></script>
     <script src="app.js" defer></script>
+    <script src="finder.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -31,7 +37,7 @@
       >
       <nav aria-label="Main navigation">
         <a href="#shop" id="shop-link">The collection</a
-        ><a class="cart-link" href="#cart"
+        ><a class="wishlist-link" id="wishlist-link" href="#wishlist" aria-label="Wishlist, 0 saved items"><span class="wishlist-nav-heart" aria-hidden="true">♡</span><span class="wishlist-link-text">Wishlist</span><span id="wishlist-count" class="wishlist-count">0</span></a><a class="cart-link" href="#cart"
           ><svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 8h12l1 12H5L6 8Zm3 0V6a3 3 0 0 1 6 0v2" />
           </svg>
@@ -82,6 +88,59 @@
             >
           </div>
         </div>
+        <section class="finder-section wrap" id="dice-finder" aria-labelledby="finder-title">
+          <div class="finder-shell">
+            <div class="finder-heading">
+              <p class="eyebrow"><span aria-hidden="true">✳</span> A LITTLE GUIDANCE. YOUR NEXT GREAT ROLL.</p>
+              <h2 id="finder-title">Find my dice<span>.</span></h2>
+              <p>New to the table? We’ll help you find a place to start.</p>
+            </div>
+            <div id="finder-content"></div>
+            <p class="sr-only" id="finder-status" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+        </section>
+        <section id="dice-guide" class="guide-section wrap" aria-labelledby="guide-heading">
+          <div class="guide-shell">
+            <div class="guide-heading">
+              <div><p class="eyebrow">FIRST GAME NIGHT? YOU’RE IN GOOD COMPANY.</p><h2 id="guide-heading" tabindex="-1">Dice, decoded<span>.</span></h2></div>
+              <p>A small guide to choosing with confidence.</p>
+            </div>
+            <details id="guide-disclosure" class="guide-disclosure">
+              <summary>Explore the beginner’s guide <span aria-hidden="true">+</span></summary>
+              <div class="guide-content">
+                <section class="guide-notation" aria-labelledby="guide-notation-heading">
+                  <div><p class="eyebrow">01 / THE SHORTHAND</p><h3 id="guide-notation-heading">A letter. A number. A little less mystery.</h3><p><strong>D</strong> stands for die, and the number tells you its sides. For example, <strong>2D6</strong> means roll two six-sided dice and add their results.</p></div>
+                  <div class="guide-notation-example" aria-label="2D6: two six-sided dice"><strong>2<span>D</span>6</strong><p>how many · die · sides</p></div>
+                </section>
+                <section aria-labelledby="guide-set-heading">
+                  <p class="eyebrow">02 / MEET THE PARTY</p><h3 id="guide-set-heading">The seven-piece set, decoded.</h3><p>Each set in our collection includes one of each below. Check your game’s requirements with your group; some games call for extra dice.</p>
+                  <ul class="guide-dice-list">
+                    <li><span class="guide-die-mark" aria-hidden="true">4</span><h4>D4</h4><p>Four sides.</p></li>
+                    <li><span class="guide-die-mark" aria-hidden="true">6</span><h4>D6</h4><p>Six sides. The familiar cube.</p></li>
+                    <li><span class="guide-die-mark" aria-hidden="true">8</span><h4>D8</h4><p>Eight sides.</p></li>
+                    <li><span class="guide-die-mark" aria-hidden="true">10</span><h4>D10</h4><p>Ten sides. The ones die in a percentile pair.</p></li>
+                    <li><span class="guide-die-mark" aria-hidden="true">%</span><h4>D%</h4><p>A ten-sided die marked in tens, from 00 to 90.</p></li>
+                    <li><span class="guide-die-mark" aria-hidden="true">12</span><h4>D12</h4><p>Twelve sides.</p></li>
+                    <li><span class="guide-die-mark" aria-hidden="true">20</span><h4>D20</h4><p>Twenty sides.</p></li>
+                  </ul>
+                  <p class="guide-percentile"><strong>What about D100?</strong> For a D&amp;D percentile roll, pair D% with D10: 70 and 1 make 71; 00 and 0 make 100.</p>
+                  <p class="guide-browse-note">Browse buttons reset your search and filters to show your choice.</p>
+                  <div class="guide-browse-actions"><button type="button" class="button primary" data-guide-type="Set">Browse seven-piece sets <span aria-hidden="true">↗</span></button><button type="button" class="button secondary" data-guide-type="D20">Browse D20 dice</button><button type="button" class="button secondary" data-guide-type="D6">Browse D6 dice</button></div>
+                </section>
+                <section class="guide-material-section" aria-labelledby="guide-material-heading">
+                  <p class="eyebrow">03 / PICK YOUR FEEL</p><h3 id="guide-material-heading">Same adventure. A different material.</h3><p>Here’s how the materials appear in our sample collection. Check each product’s size, price, and included dice before choosing.</p>
+                  <div class="guide-materials">
+                    <article><span class="guide-material-number" aria-hidden="true">01</span><h4>Resin</h4><p>Colorful singles and seven-piece sets, from terracotta Ember to dusky-blue Starlight.</p><button type="button" class="button secondary" data-guide-material="Resin">Browse resin dice</button></article>
+                    <article><span class="guide-material-number" aria-hidden="true">02</span><h4>Acrylic</h4><p>Our Ivory D6 and Tide D20: two individual dice with classic ivory and ocean-teal colors.</p><button type="button" class="button secondary" data-guide-material="Acrylic">Browse acrylic dice</button></article>
+                    <article><span class="guide-material-number" aria-hidden="true">03</span><h4>Metal</h4><p>Forged D20 and Copperbound Set are described with a weighty feel. A dice tray helps protect the table.</p><button type="button" class="button secondary" data-guide-material="Metal">Browse metal dice</button></article>
+                  </div>
+                  <p class="guide-material-note">Material doesn’t change the number of sides or pieces included. Single dice and seven-piece sets are labeled separately.</p>
+                </section>
+                <p class="guide-source">Dice notation reference: <a href="https://www.dndbeyond.com/sources/dnd/br-2024/playing-the-game" target="_blank" rel="noopener noreferrer">D&amp;D Basic Rules: game dice</a>. Your game’s rules determine which dice you need.</p>
+              </div>
+            </details>
+          </div>
+        </section>
         <section
           class="collection wrap"
           id="collection"
@@ -145,6 +204,7 @@
             <div class="catalog">
               <div class="catalog-toolbar">
                 <p id="result-count" role="status" aria-live="polite"></p>
+                <div class="catalog-controls">
                 <div class="search-box">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="10.5" cy="10.5" r="6.5" />
@@ -158,7 +218,10 @@
                     autocomplete="off"
                   />
                 </div>
+                <div class="catalog-sort"><label for="sort">Sort by</label><select id="sort"><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name-asc">Name: A–Z</option><option value="name-desc">Name: Z–A</option></select></div>
+                </div>
               </div>
+              <div id="active-filters" class="active-filters" role="group" aria-label="Active filters" hidden><ul id="filter-chip-list" class="filter-chip-list"></ul><button id="clear-active-filters" type="button" class="text-button" aria-label="Clear all active filters">Clear all</button></div>
               <div class="product-grid" id="products"></div>
               <div class="empty-state" id="no-results" hidden>
                 <span aria-hidden="true">⌕</span>
@@ -175,6 +238,9 @@
             </div>
           </div>
         </section>
+        <aside id="comparison-tray" class="comparison-tray" aria-label="Comparison selection" hidden>
+          <div id="comparison-selection"></div>
+        </aside>
         <section class="closing-note wrap">
           <span aria-hidden="true">✳</span>
           <div>
@@ -185,6 +251,15 @@
           <span class="closing-die" aria-hidden="true">20</span>
         </section>
       </section>
+      <section id="wishlist-view" class="wrap inner-page" hidden aria-labelledby="wishlist-heading">
+        <a class="back-link" href="#collection">← Back to the collection</a>
+        <p class="eyebrow">KEEP A LITTLE LUCK FOR LATER</p>
+        <h1 id="wishlist-heading" tabindex="-1">Your wishlist<span>.</span></h1>
+        <p class="wishlist-intro">Favorites for a future adventure. Move one to your bag when you’re ready; it will leave this list.</p>
+        <p id="wishlist-storage-note" class="wishlist-storage-note" hidden>Browser storage isn’t available. Your favorites work for the current page, but may disappear when you refresh or close it.</p>
+        <p id="wishlist-status" class="wishlist-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div id="wishlist-content"></div>
+      </section>
       <section
         id="cart-view"
         class="wrap inner-page"
@@ -194,6 +269,7 @@
         <a class="back-link" href="#shop">← Back to the collection</a>
         <p class="eyebrow">YOUR NEXT ADVENTURE, PACKED</p>
         <h1 id="cart-heading">Your bag<span>.</span></h1>
+        <div id="cart-undo-region" class="cart-undo-region" role="region" aria-label="Removed items recovery" hidden></div>
         <div id="cart-content"></div>
       </section>
       <section
@@ -222,6 +298,14 @@
         <small>Student storefront · Simulated orders only</small>
       </div>
     </footer>
+    <dialog id="comparison-dialog" class="comparison-dialog" aria-labelledby="comparison-title" aria-describedby="comparison-intro">
+      <button class="icon-button dialog-close" type="button" aria-label="Close comparison" data-close-dialog="comparison-dialog">×</button>
+      <p class="eyebrow">LESS GUESSWORK. MORE GOOD ROLLS.</p>
+      <h2 id="comparison-title" tabindex="-1">Find your favorite roll.</h2>
+      <p id="comparison-intro">Your picks, side by side. See what makes each one yours.</p>
+      <div id="comparison-content"></div>
+      <p id="comparison-status" class="comparison-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    </dialog>
     <dialog id="product-dialog" aria-labelledby="product-dialog-title">
       <button
         class="icon-button dialog-close"

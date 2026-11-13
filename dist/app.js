@@ -133,6 +133,7 @@ const escapeHTML = (value) =>
   );
 const productById = (id) => PRODUCTS.find((product) => product.id === id);
 let storageWarning = false;
+let cartLastSaveSucceeded = true;
 let cart = readCart();
 let checkoutStep = "delivery";
 let delivery = { name: "", address: "", phone: "" };
@@ -168,7 +169,9 @@ function readCart() {
 function persistCart() {
   try {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    cartLastSaveSucceeded = true;
   } catch {
+    cartLastSaveSucceeded = false;
     if (!storageWarning) {
       storageWarning = true;
       notify(
@@ -242,7 +245,7 @@ function renderProducts() {
   const type = $('input[name="type"]:checked').value;
   const material = $("#material").value;
   const price = $("#price").value;
-  const results = PRODUCTS.filter(
+  const filtered = PRODUCTS.filter(
     (product) =>
       product.name.toLowerCase().includes(query) &&
       (type === "all" || product.type === type) &&
@@ -254,13 +257,15 @@ function renderProducts() {
           product.price <= 500) ||
         (price === "over500" && product.price > 500)),
   );
+  const results = sortCatalog(filtered, $("#sort").value);
   $("#result-count").textContent =
-    `Showing ${results.length} of ${PRODUCTS.length} products`;
+    `Showing ${results.length} of ${PRODUCTS.length} products · ${$("#sort").selectedOptions[0].textContent}`;
+  renderActiveFilters();
   $("#no-results").hidden = results.length > 0;
   $("#products").innerHTML = results
     .map(
       (product) =>
-        `<article class="product-card"><div class="product-art" style="--card-bg:${product.bg}">${product.tag ? `<span class="product-tag">${product.tag}</span>` : ""}<button type="button" data-detail="${product.id}" aria-label="View ${product.name} details"><img src="${productImage(product)}" alt="${product.name} dice illustration" width="260" height="220"></button></div><div class="product-info"><p class="product-meta">${product.material} · ${product.type === "Set" ? "7-piece set" : product.type + " · Single die"}</p><div class="product-name-line"><h3>${product.name}</h3><span>${money(product.price)}</span></div><div class="product-actions"><button class="button secondary" type="button" data-detail="${product.id}" aria-label="View details for ${product.name}">View details</button><button class="button primary" type="button" data-add="${product.id}" aria-label="Add ${product.name} to cart">Add to cart <span aria-hidden="true">+</span></button></div></div></article>`,
+        `<article class="product-card"><div class="product-art" style="--card-bg:${product.bg}">${product.tag ? `<span class="product-tag">${product.tag}</span>` : ""}<button type="button" data-detail="${product.id}" aria-label="View ${product.name} details"><img src="${productImage(product)}" alt="${product.name} dice illustration" width="260" height="220"></button>${wishlistControl(product, true)}</div><div class="product-info"><p class="product-meta">${product.material} · ${product.type === "Set" ? "7-piece set" : product.type + " · Single die"}</p><div class="product-name-line"><h3>${product.name}</h3><span>${money(product.price)}</span></div><div class="product-actions"><button class="button secondary" type="button" data-detail="${product.id}" aria-label="View details for ${product.name}">View details</button><button class="button primary" type="button" data-add="${product.id}" aria-label="Add ${product.name} to cart">Add to cart <span aria-hidden="true">+</span></button></div>${comparisonControl(product)}</div></article>`,
     )
     .join("");
 }
@@ -283,7 +288,7 @@ function addToCart(id, quantity = 1) {
   const existing = cart.find((item) => item.id === id);
   if (existing && existing.quantity + quantity > 99) {
     notify("You can add up to 99 of each product.", true);
-    return;
+    return false;
   }
   if (existing) existing.quantity += quantity;
   else cart.push({ id, quantity });
@@ -293,13 +298,14 @@ function addToCart(id, quantity = 1) {
     notify(
       `${product.name}${quantity > 1 ? ` × ${quantity}` : ""} added to your bag.`,
     );
+  return true;
 }
 
 function showProduct(id) {
   const product = productById(id);
   detailProduct = product;
   $("#product-detail-content").innerHTML =
-    `<div class="product-details"><div class="detail-image" style="--card-bg:${product.bg}"><img src="${productImage(product)}" alt="${product.name} dice illustration" width="260" height="220"></div><div class="detail-copy"><p class="eyebrow">MEET YOUR NEXT LUCKY CHARM</p><h2 id="product-dialog-title">${product.name}</h2><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><dl class="detail-specs"><div><dt>Material</dt><dd>${product.material}</dd></div><div><dt>Size</dt><dd>${product.size}</dd></div><div><dt>Includes</dt><dd>${product.contents}</dd></div></dl><span class="detail-quantity-label">Quantity</span><div class="detail-add">${quantityControl(product, 1, "detail")}<button class="button primary" type="button" id="detail-add">Add to cart <span aria-hidden="true">+</span></button></div></div></div>`;
+    `<div class="product-details"><div class="detail-image" style="--card-bg:${product.bg}"><img src="${productImage(product)}" alt="${product.name} dice illustration" width="260" height="220"></div><div class="detail-copy"><p class="eyebrow">MEET YOUR NEXT LUCKY CHARM</p><h2 id="product-dialog-title">${product.name}</h2><p class="detail-price">${money(product.price)}</p><p class="detail-description">${product.description}</p><dl class="detail-specs"><div><dt>Material</dt><dd>${product.material}</dd></div><div><dt>Size</dt><dd>${product.size}</dd></div><div><dt>Includes</dt><dd>${product.contents}</dd></div></dl><span class="detail-quantity-label">Quantity</span><div class="detail-add">${quantityControl(product, 1, "detail")}<button class="button primary" type="button" id="detail-add">Add to cart <span aria-hidden="true">+</span></button></div>${comparisonControl(product)}${wishlistControl(product)}${diceGuideHelp(product)}</div></div>`;
   $("#product-dialog").showModal();
 }
 
@@ -309,6 +315,7 @@ function orderSummary(checkout = false) {
 }
 
 function renderCart() {
+  renderCartUndo();
   if (!cart.length) {
     $("#cart-content").innerHTML =
       `<div class="empty-cart-layout"><div class="empty-state"><span aria-hidden="true">◇</span><h3>Your next adventure awaits.</h3><p>Your bag is empty. Let’s find your lucky dice.</p><a class="button primary" href="#shop">Explore the collection ↗</a></div>${orderSummary()}</div>`;
@@ -435,6 +442,7 @@ function validateDelivery(form) {
 
 function finishOrder() {
   if (!cart.length || checkoutStep !== "review") return;
+  clearCartUndo();
   const unique =
     globalThis.crypto?.randomUUID?.().slice(0, 8).toUpperCase() ||
     Math.random().toString(36).slice(2, 10).toUpperCase();
@@ -456,7 +464,7 @@ function route(initial = false) {
   rememberDelivery();
   const hash = location.hash.slice(1);
   let view =
-    hash === "cart" ? "cart" : hash === "checkout" ? "checkout" : "shop";
+    hash === "cart" ? "cart" : hash === "checkout" ? "checkout" : hash === "wishlist" ? "wishlist" : "shop";
   if (
     view === "checkout" &&
     !cart.length &&
@@ -469,18 +477,28 @@ function route(initial = false) {
     checkoutStep = "delivery";
     lastOrder = null;
   }
-  ["shop", "cart", "checkout"].forEach((name) => {
+  ["shop", "cart", "checkout", "wishlist"].forEach((name) => {
     $(`#${name}-view`).hidden = name !== view;
   });
   if (view === "cart") renderCart();
-  if (view === "checkout") renderCheckout();
-  document.title = `${view === "cart" ? "Your bag" : view === "checkout" ? "Checkout" : "Dice for your next adventure"} — Sidequest`;
-  if (!initial && hash !== "collection") {
+  if (view === "checkout") { clearCartUndo(); renderCheckout(); }
+  if (view === "wishlist") renderWishlist();
+  document.title = `${view === "cart" ? "Your bag" : view === "checkout" ? "Checkout" : view === "wishlist" ? "Your wishlist" : "Dice for your next adventure"} — Sidequest`;
+  const section = ["collection", "dice-finder", "dice-guide"].includes(hash)
+    ? document.getElementById(hash)
+    : null;
+  if (section) {
+    if (hash === "dice-guide") $("#guide-disclosure").open = true;
+    section.scrollIntoView({ behavior: "instant" });
+    if (!initial) {
+      const heading = $("h2", section);
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    }
+  } else if (!initial) {
     window.scrollTo({ top: 0, behavior: "instant" });
-    $("#main").focus({ preventScroll: true });
+    $(view === "wishlist" ? "#wishlist-heading" : "#main").focus({ preventScroll: true });
   }
-  if (hash === "collection")
-    $("#collection").scrollIntoView({ behavior: "instant" });
 }
 
 document.addEventListener("click", (event) => {
@@ -504,14 +522,17 @@ document.addEventListener("click", (event) => {
       `Remove ${productById(id).name} from your bag? You can always add it again.`,
       "Remove item",
       () => {
+        const index = cart.findIndex((item) => item.id === id);
+        if (index < 0) return;
+        rememberCartRemoval(cart[index], index);
         cart = cart.filter((item) => item.id !== id);
         checkoutStep = "delivery";
         persistCart();
         renderCart();
-        notify(`${productById(id).name} removed from your bag.`);
+        notify(`${productById(id).name} removed from your bag. Undo is available.${cartLastSaveSucceeded ? "" : " For this page only: browser storage couldn’t save the bag."}`, !cartLastSaveSucceeded);
       },
       () => {
-        ($("[data-remove]", $("#cart-content")) || $("#cart-heading")).focus();
+        ($("#undo-cart-removal") || $("[data-remove]", $("#cart-content")) || $("#cart-heading")).focus();
       },
     );
   }
@@ -568,7 +589,7 @@ document.addEventListener("keydown", (event) => {
   if (!dialog) return;
   const controls = [
     ...dialog.querySelectorAll(
-      "button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href]",
+      'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], summary, [tabindex]:not([tabindex="-1"]):not(:disabled)',
     ),
   ].filter((element) => element.getClientRects().length);
   const first = controls[0];
@@ -591,7 +612,7 @@ document.addEventListener("keydown", (event) => {
 });
 $("#search").addEventListener("input", renderProducts);
 document
-  .querySelectorAll('input[name="type"], #material, #price')
+  .querySelectorAll('input[name="type"], #material, #price, #sort')
   .forEach((input) => input.addEventListener("change", renderProducts));
 $("#reset-filters").addEventListener("click", resetFilters);
 $("#clear-search").addEventListener("click", () => {
@@ -615,6 +636,7 @@ $("#confirm-dialog").addEventListener("close", () => {
 window.addEventListener("hashchange", () => route());
 window.addEventListener("storage", (event) => {
   if (event.key !== CART_KEY && event.key !== null) return;
+  clearCartUndo();
   cart = readCart();
   checkoutStep = "delivery";
   if ($("#confirm-dialog").open) $("#confirm-dialog").close("cancel");
