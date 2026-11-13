@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f3ed" />
+    <meta
+      name="description"
+      content="Find your next lucky roll. Shop colorful dice, metal D20s, and polyhedral sets at Sidequest, a simulated student storefront."
+    />
+    <title>Sidequest — A little luck goes a long way.</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23be5031'/%3E%3Cpath d='M20 6 34 15 30 31 10 31 6 15Z' fill='none' stroke='%23fff' stroke-width='2'/%3E%3Ctext x='20' y='26' text-anchor='middle' fill='white' font-size='17'%3E20%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="announcement">
+      A LITTLE LUCK. A LOT OF ADVENTURE.
+      <span>Find your next favorite roll.</span>
+    </div>
+    <header class="site-header wrap">
+      <a class="brand" href="#shop" aria-label="Sidequest home"
+        ><span class="brand-mark" aria-hidden="true">⬡</span> SIDEQUEST<span
+          class="brand-dot"
+          >®</span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#shop" id="shop-link">The collection</a
+        ><a class="cart-link" href="#cart"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 8h12l1 12H5L6 8Zm3 0V6a3 3 0 0 1 6 0v2" />
+          </svg>
+          Your bag <span id="cart-count">0</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <section id="shop-view">
+        <div class="hero wrap">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span class="tiny-star">✳</span> SMALL OBJECTS. EPIC
+              POSSIBILITIES.
+            </p>
+            <h1>A little luck goes<br />a <em>long way.</em></h1>
+            <p>
+              For the critical hits, the close calls, and the stories<br
+                class="desktop-break"
+              />
+              you’ll tell long after game night.
+            </p>
+            <a class="button primary" href="#collection"
+              >Find your dice <span aria-hidden="true">↗</span></a
+            >
+            <div class="hero-note">
+              <span aria-hidden="true">✦</span> Good company. Great rolls.
+            </div>
+          </div>
+          <div
+            class="hero-art"
+            id="hero-art"
+            aria-label="Illustration of a terracotta D20, green D6, and ivory dice"
+          >
+            <span class="orbit orbit-one"></span
+            ><span class="orbit orbit-two"></span
+            ><span class="art-spark spark-one">✧</span
+            ><span class="art-spark spark-two">✳</span
+            ><span class="art-label">LET THE GOOD TIMES ROLL</span>
+          </div>
+        </div>
+        <div class="values-bar">
+          <div class="wrap">
+            <span><b aria-hidden="true">◇</b> A roll for every adventurer</span
+            ><span><b aria-hidden="true">✳</b> Details worth looking at</span
+            ><span
+              ><b aria-hidden="true">♡</b> Picked for your next game night</span
+            >
+          </div>
+        </div>
+        <section
+          class="collection wrap"
+          id="collection"
+          aria-labelledby="collection-heading"
+        >
+          <div class="collection-heading">
+            <div>
+              <p class="eyebrow">YOUR NEXT ADVENTURE STARTS HERE</p>
+              <h2 id="collection-heading">The dice collection<span>.</span></h2>
+            </div>
+            <p>Small treasures for your tabletop.</p>
+          </div>
+          <div class="catalog-layout">
+            <aside class="filters" aria-label="Product filters">
+              <div class="filter-heading">
+                <h3>Make it your own</h3>
+                <button class="text-button" id="reset-filters" type="button">
+                  Reset
+                </button>
+              </div>
+              <fieldset>
+                <legend>Dice type</legend>
+                <label class="radio-row"
+                  ><input type="radio" name="type" value="all" checked /> All
+                  dice <span>08</span></label
+                ><label class="radio-row"
+                  ><input type="radio" name="type" value="D6" /> D6
+                  <span>02</span></label
+                ><label class="radio-row"
+                  ><input type="radio" name="type" value="D20" /> D20
+                  <span>03</span></label
+                ><label class="radio-row"
+                  ><input type="radio" name="type" value="Set" /> Dice sets
+                  <span>03</span></label
+                >
+              </fieldset>
+              <div class="filter-group">
+                <label for="material">Material</label
+                ><select id="material">
+                  <option value="all">All materials</option>
+                  <option value="Resin">Resin</option>
+                  <option value="Metal">Metal</option>
+                  <option value="Acrylic">Acrylic</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="price">Price range</label
+                ><select id="price">
+                  <option value="all">Any price</option>
+                  <option value="under250">Under ₱250</option>
+                  <option value="250to500">₱250–₱500</option>
+                  <option value="over500">Over ₱500</option>
+                </select>
+              </div>
+              <div class="sidebar-note">
+                <span aria-hidden="true">✧</span>
+                <p>Every great story<br />starts with a roll.</p>
+                <small>MAKE YOURS A GOOD ONE.</small>
+              </div>
+            </aside>
+            <div class="catalog">
+              <div class="catalog-toolbar">
+                <p id="result-count" role="status" aria-live="polite"></p>
+                <div class="search-box">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="10.5" cy="10.5" r="6.5" />
+                    <path d="m16 16 5 5" /></svg
+                  ><label class="sr-only" for="search"
+                    >Search dice by name</label
+                  ><input
+                    id="search"
+                    type="search"
+                    placeholder="Find your next lucky roll…"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+              <div class="product-grid" id="products"></div>
+              <div class="empty-state" id="no-results" hidden>
+                <span aria-hidden="true">⌕</span>
+                <h3>No dice found</h3>
+                <p>Try another name or loosen your filters.</p>
+                <button
+                  class="button secondary"
+                  id="clear-search"
+                  type="button"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="closing-note wrap">
+          <span aria-hidden="true">✳</span>
+          <div>
+            <p class="eyebrow">MORE THAN NUMBERS ON A TABLE</p>
+            <h2>A good roll is just the beginning.</h2>
+            <p>Gather your party. Make some memories.</p>
+          </div>
+          <span class="closing-die" aria-hidden="true">20</span>
+        </section>
+      </section>
+      <section
+        id="cart-view"
+        class="wrap inner-page"
+        hidden
+        aria-labelledby="cart-heading"
+      >
+        <a class="back-link" href="#shop">← Back to the collection</a>
+        <p class="eyebrow">YOUR NEXT ADVENTURE, PACKED</p>
+        <h1 id="cart-heading">Your bag<span>.</span></h1>
+        <div id="cart-content"></div>
+      </section>
+      <section
+        id="checkout-view"
+        class="wrap inner-page"
+        hidden
+        aria-labelledby="checkout-heading"
+      >
+        <a class="back-link" href="#cart">← Back to your bag</a>
+        <p class="eyebrow">ONE STEP CLOSER TO GAME NIGHT</p>
+        <h1 id="checkout-heading">Make it yours<span>.</span></h1>
+        <ol class="checkout-steps" aria-label="Checkout progress">
+          <li data-step="delivery"><span>1</span>Delivery</li>
+          <li data-step="review"><span>2</span>Review</li>
+          <li data-step="complete"><span>3</span>Complete</li>
+        </ol>
+        <div id="checkout-content"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <a class="brand" href="#shop"
+          >SIDEQUEST<span class="brand-dot">®</span></a
+        >
+        <p>A little luck. A lot of adventure.</p>
+        <small>Student storefront · Simulated orders only</small>
+      </div>
+    </footer>
+    <dialog id="product-dialog" aria-labelledby="product-dialog-title">
+      <button
+        class="icon-button dialog-close"
+        type="button"
+        aria-label="Close product details"
+        data-close-dialog="product-dialog"
+      >
+        ×
+      </button>
+      <div id="product-detail-content"></div>
+    </dialog>
+    <dialog
+      id="confirm-dialog"
+      class="confirm-dialog"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-description"
+    >
+      <p class="eyebrow">ONE QUICK CHECK</p>
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-description"></p>
+      <div class="dialog-actions">
+        <button
+          class="button secondary"
+          id="confirm-cancel"
+          type="button"
+          autofocus
+        >
+          Cancel</button
+        ><button class="button primary" id="confirm-accept" type="button">
+          Confirm
+        </button>
+      </div>
+    </dialog>
+    <div
+      id="toast-region"
+      class="toast-region"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+  </body>
+</html>
