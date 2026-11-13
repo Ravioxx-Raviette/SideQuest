@@ -5,6 +5,9 @@ let wishlistIds = new Set();
 let wishlistReady = false;
 let wishlistCanSave = true;
 let wishlistDetailOpener = null;
+// One heart shape for both states; CSS fills it when aria-pressed="true", so
+// saved and unsaved hearts stay the same size and style.
+const WISHLIST_HEART = `<svg class="heart-icon" viewBox="0 0 24 24" focusable="false"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.5 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.4 0 5.5 3.4 4.3 6.6-1.8 4.8-9.3 9.4-9.3 9.4Z"/></svg>`;
 
 function readSavedWishlist() {
   let raw;
@@ -23,7 +26,7 @@ function ensureWishlist() {
 function wishlistControl(product, compact = false) {
   ensureWishlist();
   const selected = wishlistIds.has(product.id);
-  const button = `<button type="button" class="wishlist-toggle${compact ? " wishlist-toggle-compact" : ""}" data-wishlist="${product.id}" aria-label="Save ${escapeHTML(product.name)} to wishlist" aria-pressed="${selected}"><span aria-hidden="true" data-wishlist-mark>${selected ? "♥" : "♡"}</span>${compact ? "" : `<span data-wishlist-label>${selected ? "Saved to wishlist" : "Save to wishlist"}</span>`}</button>`;
+  const button = `<button type="button" class="wishlist-toggle${compact ? " wishlist-toggle-compact" : ""}" data-wishlist="${product.id}" aria-label="Save ${escapeHTML(product.name)} to wishlist" aria-pressed="${selected}"><span aria-hidden="true" data-wishlist-mark>${WISHLIST_HEART}</span>${compact ? "" : `<span data-wishlist-label>${selected ? "Saved to wishlist" : "Save to wishlist"}</span>`}</button>`;
   return compact ? button : `<div class="wishlist-action">${button}<p class="wishlist-feedback" data-wishlist-feedback role="status" aria-live="polite"></p></div>`;
 }
 function renderWishlist() {
@@ -34,7 +37,7 @@ function renderWishlist() {
   const previousCards = [...content.querySelectorAll(".wishlist-card")];
   const oldIndex = previousCards.indexOf(active?.closest(".wishlist-card"));
   const products = [...wishlistIds].map(productById).filter(Boolean);
-  content.innerHTML = products.length ? `<div class="wishlist-grid">${products.map((product) => `<article class="wishlist-card"><div class="product-art" style="--card-bg:${product.bg}"><img src="${productImage(product)}" alt="${escapeHTML(product.name)} dice illustration" width="260" height="220"></div><div class="product-info"><p class="product-meta">${product.material} · ${product.type === "Set" ? "7-piece set" : `${product.type} · Single die`}</p><div class="product-name-line"><h2>${escapeHTML(product.name)}</h2><strong>${money(product.price)}</strong></div><p class="wishlist-description">${escapeHTML(product.description)}</p><div class="wishlist-card-actions"><button type="button" class="button secondary" data-detail="${product.id}" aria-label="View details for ${escapeHTML(product.name)}">View details</button><button type="button" class="button primary" data-wishlist-move="${product.id}" aria-label="Move ${escapeHTML(product.name)} to bag">Move to bag <span aria-hidden="true">→</span></button></div><button class="text-button wishlist-remove" type="button" data-wishlist-remove="${product.id}" aria-label="Remove ${escapeHTML(product.name)} from wishlist">Remove from wishlist</button></div></article>`).join("")}</div>` : `<div class="empty-state wishlist-empty"><span aria-hidden="true">♡</span><h2>Your favorites start with a little curiosity.</h2><p>Tap a heart on any dice you like. They’ll be waiting here for your next adventure.</p><a class="button primary" href="#collection">Explore the collection <span aria-hidden="true">↗</span></a></div>`;
+  content.innerHTML = products.length ? `<div class="wishlist-grid">${products.map((product) => `<article class="wishlist-card"><div class="product-art" style="--card-bg:${product.bg}"><img src="${productImage(product)}" alt="${escapeHTML(product.name)} dice illustration" width="260" height="220"></div><div class="product-info"><p class="product-meta">${product.material} · ${product.type === "Set" ? "7-piece set" : `${product.type} · Single die`}</p><div class="product-name-line"><h2>${escapeHTML(product.name)}</h2><strong>${money(product.price)}</strong></div><p class="wishlist-description">${escapeHTML(product.description)}</p><div class="wishlist-card-actions"><button type="button" class="button secondary" data-detail="${product.id}" aria-label="View details for ${escapeHTML(product.name)}">View details</button><button type="button" class="button primary" data-wishlist-move="${product.id}" aria-label="Move ${escapeHTML(product.name)} to bag">Move to bag <span aria-hidden="true">→</span></button></div><button class="text-button wishlist-remove" type="button" data-wishlist-remove="${product.id}" aria-label="Remove ${escapeHTML(product.name)} from wishlist">Remove from wishlist</button></div></article>`).join("")}</div>` : `<div class="empty-state wishlist-empty"><span class="wishlist-empty-heart" aria-hidden="true">${WISHLIST_HEART}</span><h2>Your favorites start with a little curiosity.</h2><p>Tap a heart on any dice you like. They’ll be waiting here for your next adventure.</p><a class="button primary" href="#collection">Explore the collection <span aria-hidden="true">↗</span></a></div>`;
   if (restore) {
     const cards = content.querySelectorAll(".wishlist-card");
     (cards[Math.max(0, Math.min(oldIndex, cards.length - 1))]?.querySelector("button") || document.querySelector("#wishlist-heading")).focus();
@@ -45,7 +48,6 @@ function syncWishlist() {
   document.querySelectorAll("[data-wishlist]").forEach((button) => {
     const saved = wishlistIds.has(button.dataset.wishlist);
     button.setAttribute("aria-pressed", String(saved));
-    button.querySelector("[data-wishlist-mark]").textContent = saved ? "♥" : "♡";
     const label = button.querySelector("[data-wishlist-label]");
     if (label) label.textContent = saved ? "Saved to wishlist" : "Save to wishlist";
   });

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="90" height="600" viewBox="0 0 90 600">
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4c6a2e"/>
+      <stop offset="1" stop-color="#86a553"/>
+    </linearGradient>
+    <g id="leaf">
+      <path d="M0 0 C6 -9 20 -11 28 0 C20 11 6 9 0 0Z" fill="url(#lg)"/>
+      <path d="M1 0 L24 0" stroke="#3a5223" stroke-width=".9"/>
+    </g>
+    <g id="flower">
+      <circle cx="0" cy="-4" r="3.6"/><circle cx="3.8" cy="-1.2" r="3.6"/><circle cx="2.35" cy="3.2" r="3.6"/>
+      <circle cx="-2.35" cy="3.2" r="3.6"/><circle cx="-3.8" cy="-1.2" r="3.6"/>
+      <circle r="2.1" fill="#e2b54d"/>
+    </g>
+  </defs>
+  <g fill="none" stroke-linecap="round">
+    <path d="M45 0 C70 50 20 100 42 150 S72 250 45 300 S18 400 44 450 S70 550 45 600" stroke="#3f5527" stroke-width="3.6"/>
+    <path d="M45 0 C70 50 20 100 42 150 S72 250 45 300 S18 400 44 450 S70 550 45 600" stroke="#6d8a43" stroke-width="1.2" transform="translate(-.8 0)"/>
+    <g stroke="#56733a" stroke-width="1.3">
+      <path d="M56 70 c12 -4 18 6 11 12 c-5 4 -10 -1 -6 -5"/>
+      <path d="M33 245 c-12 -2 -16 9 -9 13 c5 3 9 -2 5 -5"/>
+      <path d="M32 420 c-12 -4 -17 6 -10 12 c5 4 10 -1 6 -5"/>
+      <path d="M58 548 c12 0 14 11 7 13 c-5 2 -8 -3 -4 -5"/>
+    </g>
+  </g>
+  <use href="#leaf" transform="translate(55 45) rotate(-25)"/>
+  <use href="#leaf" transform="translate(36 105) rotate(205)"/>
+  <use href="#leaf" transform="translate(50 175) rotate(20) scale(.9)"/>
+  <use href="#leaf" transform="translate(60 230) rotate(-35)"/>
+  <use href="#leaf" transform="translate(40 280) rotate(200) scale(1.1)"/>
+  <use href="#leaf" transform="translate(34 340) rotate(160)"/>
+  <use href="#leaf" transform="translate(30 395) rotate(210) scale(.85)"/>
+  <use href="#leaf" transform="translate(52 470) rotate(-20)"/>
+  <use href="#leaf" transform="translate(60 520) rotate(30) scale(.95)"/>
+  <use href="#leaf" transform="translate(42 575) rotate(195)"/>
+  <use href="#flower" fill="#f1c6c4" transform="translate(68 205)"/>
+  <use href="#flower" fill="#f8eedb" transform="translate(22 368) scale(.85)"/>
+  <use href="#flower" fill="#e7a9b0" transform="translate(66 540) scale(.9)"/>
+</svg>

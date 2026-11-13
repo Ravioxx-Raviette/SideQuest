@@ -1,6 +1,6 @@
 # Sidequest dice shop
 
-A responsive class demo built with HTML, CSS, and vanilla JavaScript. No backend, runtime dependencies, build step, or external assets are required.
+A responsive class demo built with HTML, CSS, and vanilla JavaScript. No backend, runtime dependencies, or build step are required. Fonts (Fraunces and Nunito) load from Google Fonts and fall back to system fonts when offline.
 
 ## Open the shop
 
@@ -23,6 +23,11 @@ Then visit http://127.0.0.1:4173. Installing dependencies is not required to run
 - `dist/wishlist.js`: saved favorites, shared heart controls, and safe moves into the bag.
 - `dist/catalog.js`: visible active filters, individual chip removal, and product sorting.
 - `dist/cart-undo.js`: persistent-in-page recovery of confirmed bag removals.
+- `dist/ambience.js`: decorative ambience: fireflies and a candlelight cursor in dark mode, butterflies and a sparkle trail in light mode (non-interactive canvases; off for reduced motion).
+- `dist/theme.js`: light / dark mode toggle (remembers the choice; defaults to the system setting).
+- `dist/dice-roll.js`: the rollable D20 in the closing note (fair random roll, announced to screen readers).
+- `dist/scroll-lock.js`: locks the page behind open pop-ups, swapping the scrollbar for an unclickable look-alike so nothing shifts or scrolls.
+- `dist/assets/`: local SVG textures for the wooden background and climbing vines.
 
 Edit the `PRODUCTS` array in `dist/app.js` to change product names, prices, specifications, and colors. Prices are in Philippine pesos.
 
